@@ -47,6 +47,7 @@ async function loadFiles() {
             <tr>
                 <th>Name</th>
                 <th>File Key</th>
+                <th>Uploaded At</th>
                 <th>Action</th>
             </tr>
         </thead>
@@ -56,9 +57,10 @@ async function loadFiles() {
     files.forEach(file => {
         const row = document.createElement('tr');
         row.innerHTML = `
-            <td>${file.name}</td>
-            <td>${file.key}</td>
-            <td><button onclick="deleteFile('${file.key}')">Delete</button></td>
+            <td>${file.filename}</td>
+            <td>${file.filepath}</td>
+            <td>${file.uploaded_at}</td>
+            <td><button onclick="deleteFile('${file.filepath}')">Delete</button></td>
         `;
         table.querySelector('tbody').appendChild(row);
     });
@@ -66,6 +68,7 @@ async function loadFiles() {
     notesList.appendChild(table);
 }
 
+// eslint-disable-next-line no-unused-vars
 async function deleteFile(fileKey) {
     const response = await fetch(`/files/${fileKey}`, {
         method: 'DELETE',

@@ -1,6 +1,7 @@
 const express = require('express');
 const multer = require('multer');
 const fs = require('fs');
+const { Pool } = require('pg');
 const path = require('path');
 require('dotenv').config();
 
@@ -23,19 +24,53 @@ const blobServiceClient = new BlobServiceClient(
 
 const containerClient = blobServiceClient.getContainerClient(process.env.AZURE_CONTAINER_NAME);
 
-const filesDataPath = './filesData.json';
+//Set up PostgreSQL client
+const pool = new Pool({
+    user: process.env.PGUSER,
+    host: process.env.PGHOST,
+    database: process.env.PGDATABASE,
+    password: process.env.PGPASSWORD,
+    port: process.env.PGPORT,
+});
 
-const loadFilesData = () => {
-    if (fs.existsSync(filesDataPath)) {
-        const data = fs.readFileSync(filesDataPath);
-        return JSON.parse(data);
+const loadFilesData = async () => {
+    const client = await pool.connect();
+    try {
+        const query_result = await client.query('SELECT * FROM files');
+        return query_result.rows;
+    } catch (err) {
+        console.error('Error loading files data:', err);
+        return [];
+    } finally {
+        client.release();
     }
-    return [];
 };
 
-const saveFilesData = (files) => {
-    fs.writeFileSync(filesDataPath, JSON.stringify(files, null, 2));
+const saveFilesData = async (filename, filepath) => {
+    const client = await pool.connect();
+    try {
+        await client.query("INSERT INTO files (filename, filepath) VALUES ($1, $2)", [filename, filepath]);
+    }
+    catch (err) {
+        console.error('Error saving files data:', err);
+    }
+    finally {
+        client.release();
+    }
 };
+
+const deleteFilesData = async (filepath) => {
+    const client = await pool.connect();
+    try {
+        await client.query("DELETE FROM files WHERE filepath = $1", [filepath]);
+    }
+    catch (err) {
+        console.error('Error deleting files data:', err);
+    }
+    finally {
+        client.release();
+    }
+}
 
 let files = loadFilesData();
 
@@ -50,14 +85,14 @@ app.post('/upload', upload.single('file'), async (req, res) => {
 
     if (req.file) {
         try {
+
             const blobName = req.file.filename;
             const blockBlobClient = containerClient.getBlockBlobClient(blobName);
 
             await blockBlobClient.uploadFile(req.file.path);
             fs.unlinkSync(req.file.path); // remove the file locally after upload
 
-            files.push({ name: fileName, key: blobName });
-            saveFilesData(files);
+            saveFilesData(fileName, blobName);
 
             res.status(200).send('File uploaded successfully.');
         } catch (err) {
@@ -70,7 +105,7 @@ app.post('/upload', upload.single('file'), async (req, res) => {
 });
 
 app.get('/files', (req, res) => {
-    res.json(files);
+    loadFilesData().then(files => res.json(files));
 });
 
 app.delete('/files/:key', async (req, res) => {
@@ -79,9 +114,7 @@ app.delete('/files/:key', async (req, res) => {
     try {
         const blockBlobClient = containerClient.getBlockBlobClient(fileKey);
         await blockBlobClient.delete();
-
-        files = files.filter(file => file.key !== fileKey);
-        saveFilesData(files);
+        deleteFilesData(fileKey);
 
         res.status(200).send('File deleted successfully.');
     } catch (err) {
