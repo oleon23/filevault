@@ -23,7 +23,7 @@ jobs:
 
     - name: Install dependencies
       run: npm install
-      working-directory: src/azure-sa
+      working-directory: src/azure-blob
       
     - name: Run ESLint
       run: npx eslint .
