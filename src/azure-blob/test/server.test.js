@@ -53,6 +53,7 @@ jest.mock('pg', () => {
 
 
 const app = express();
+app.disable('x-powered-by');
 app.use(express.json());
 
 app.get('/files', server.loadFilesData);
