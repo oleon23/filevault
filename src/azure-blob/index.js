@@ -11,7 +11,12 @@ const server = require('./server');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-const upload = multer({ dest: 'uploads/' });
+const upload = multer({ 
+    dest: 'uploads/',
+    limits: {
+        fileSize: 8000000
+    }
+ });
 
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json());
