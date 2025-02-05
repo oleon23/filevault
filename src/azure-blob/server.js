@@ -65,7 +65,6 @@ async function uploadFile(request, response) {
     }
 
     if (request.file) {
-        const client = await pool.connect();
         try {
             const blobName = request.file.filename;
             const blockBlobClient = containerClient.getBlockBlobClient(blobName);
