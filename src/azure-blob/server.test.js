@@ -26,7 +26,7 @@ jest.mock('@azure/storage-blob', () => ({
     
 // const request = require('supertest');
 const express = require('express');
-const server = require('../server');
+const server = require('./server');
 // const path = require('path');
 // const { Pool } = require('pg');
 
