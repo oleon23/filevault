@@ -22,19 +22,19 @@ jobs:
         node-version: '23.x'
 
     - name: Install dependencies
-      run: npm install
+      run: yarn install
       working-directory: src/azure-blob
       
     - name: Run ESLint
-      run: npx eslint .
+      run: yarn lint
       working-directory: src/azure-blob
     
     - name: Build
-      run: npm run build --if-present
+      run: yarn build
       working-directory: src/azure-blob
       
     - name: Run tests
-      run: npm test
+      run: yarn test
       working-directory: src/azure-blob  
 
     # Add deploy step later  

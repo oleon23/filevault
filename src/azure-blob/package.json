@@ -5,11 +5,14 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
+    "lint": "eslint .",
+    "lint:fix": "yarn lint --fix",
     "test": "jest"
   },
   "dependencies": {
     "@azure/storage-blob": "^12.26.0",
     "dotenv": "^8.6.0",
+    "eslint": "^9.19.0",
     "express": "^4.21.2",
     "multer": "^1.4.4",
     "pg": "^8.13.1"
