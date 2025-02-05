@@ -24,21 +24,10 @@ jest.mock('@azure/storage-blob', () => ({
     })
 }));
     
-// jest.mock('pg', () => ({
-//     ...jest.requireActual('pg'),
-//     Pool: jest.fn().mockImplementation(function () {
-//         return {
-//             connect: jest.fn().mockReturnValue({
-//                 query: jest.fn().mockReturnValue({ rows: [{}] }),
-//                 release: jest.fn()
-//             })
-//         }
-//     })
-// }));
-const request = require('supertest');
+// const request = require('supertest');
 const express = require('express');
 const server = require('../server');
-const path = require('path');
+// const path = require('path');
 const { Pool } = require('pg');
 
 
@@ -61,17 +50,6 @@ jest.mock('pg', () => {
         };
     return { Pool: jest.fn(() => mPool) };
 });
-// jest.mock('pg', () => {
-//     const mPool = {
-//       connect: function () {
-//         return { query: jest.fn() };
-//       }
-//     //   query: jest.fn(),
-//     //   end: jest.fn(),
-//     //   on: jest.fn(),
-//     };
-//     return { Pool: jest.fn(() => mPool) };
-// });
 
 
 const app = express();
@@ -83,10 +61,10 @@ app.post('/upload', server.uploadFile);
 
 describe('Test all endpoints', () => {
     let pool;
-    let client
+    // let client
     beforeEach(() => {
         pool = new Pool();
-        client = pool.connect();
+        // client = pool.connect();
     });
 
     afterEach(() => {
