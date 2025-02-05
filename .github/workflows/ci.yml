@@ -1,0 +1,44 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '23.x'
+
+    - name: Install dependencies
+      run: yarn install
+      working-directory: src/azure-blob
+      
+    - name: Run ESLint
+      run: yarn lint
+      working-directory: src/azure-blob
+    
+    # Add build step later
+    # - name: Build
+    #   run: yarn run build
+    #   working-directory: src/azure-blob
+      
+    - name: Run tests
+      run: yarn test
+      working-directory: src/azure-blob  
+
+    # Add deploy step later  
+    # - name: Deploy
+    #   run: echo "Deploy step here"
+    #   working-directory: src/azure-blob

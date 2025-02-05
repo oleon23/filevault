@@ -1,0 +1,29 @@
+name: SonarQube Scan
+on:
+    push:
+      branches:
+        - main
+    pull_request:
+      branches:
+        - main
+jobs:
+  sonarqube:
+    name: SonarQube Scan
+    runs-on: ubuntu-latest
+    steps:
+        - uses: actions/checkout@v4
+          with:
+            fetch-depth: 0  # Disabling shallow clones is recommended for improving the relevancy of reporting
+        - name: Install dependencies
+          run: yarn install
+          working-directory: src/azure-blob  
+        - name: Test and coverage
+          working-directory: src/azure-blob
+          run: yarn jest --coverage
+        - name: Official SonarQube Scan
+          uses: SonarSource/sonarqube-scan-action@v4.2.1
+          with: 
+            projectBaseDir: src/azure-blob
+          env:
+            SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+            GITHUB_TOKEN: ${{ secrets.GHA_TOKEN }}
