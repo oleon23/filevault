@@ -15,11 +15,11 @@ jobs:
           with:
             fetch-depth: 0  # Disabling shallow clones is recommended for improving the relevancy of reporting
         - name: Install dependencies
-          run: npm install
+          run: yarn install
           working-directory: src/azure-blob  
         - name: Test and coverage
           working-directory: src/azure-blob
-          run: npm test --coverage
+          run: yarn jest --coverage
         - name: Official SonarQube Scan
           uses: SonarSource/sonarqube-scan-action@v4.2.1
           with: 
