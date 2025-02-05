@@ -18,7 +18,7 @@ jobs:
           run: npm install
           working-directory: src/azure-blob  
         - name: Test and coverage
-          working-directory: ./src/azure-blob
+          working-directory: src/azure-blob
           run: npm test --coverage
         - name: Official SonarQube Scan
           uses: SonarSource/sonarqube-scan-action@v4.2.1
