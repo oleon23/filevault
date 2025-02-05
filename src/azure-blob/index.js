@@ -18,6 +18,7 @@ const upload = multer({
     }
  });
 
+app.disable('x-powered-by');
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json());
 
