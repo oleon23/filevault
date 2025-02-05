@@ -60,10 +60,10 @@ app.delete('/files/:key', server.deleteFile);
 app.post('/upload', server.uploadFile);
 
 describe('Test all endpoints', () => {
-    let pool;
+    // let pool;
     // let client
     beforeEach(() => {
-        pool = new Pool();
+        // pool = new Pool();
         // client = pool.connect();
     });
 
